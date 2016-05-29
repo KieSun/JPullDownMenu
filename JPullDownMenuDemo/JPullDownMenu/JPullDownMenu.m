@@ -94,7 +94,7 @@
         titleButton.titleLabel.font = [UIFont systemFontOfSize:15];
         [titleButton setTitleColor:[[UIColor blackColor]colorWithAlphaComponent:0.3] forState:UIControlStateSelected];
         [titleButton setImage:[UIImage imageNamed:@"JPullDown.bundle/jiantou_up"] forState:UIControlStateNormal];
-        [titleButton setImage:[UIImage imageNamed:@"JPullDown.bundle/jiantou_down"] forState:UIControlStateSelected];
+
         titleButton.imageEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 0);
         
         [self addSubview:titleButton];
@@ -188,6 +188,8 @@
         
         KOBJCSetObject(button, title);
         
+        [button setTitle:title forState:UIControlStateNormal];
+        
     }
     
     [self takeBackTableView];
@@ -203,14 +205,18 @@
         if (button == titleButton) {
             button.selected=!button.selected;
             self.tempButton =button;
+            [self changeButtonObject:button TransformAngle:M_PI];
         }else
         {
             button.selected=NO;
+            [self changeButtonObject:button TransformAngle:0];
         }
     }
     
     
     if (titleButton.selected) {
+        
+       [self changeButtonObject:titleButton TransformAngle:M_PI];
         
         self.tableDataArray = self.menuDataArray[index];
         
@@ -235,8 +241,6 @@
         [self takeBackTableView];
     }
     
-    //    NSIndexSet *set = [NSIndexSet indexSetWithIndex:0];
-    //    [_tableView reloadSections:set withRowAnimation:UITableViewRowAnimationFade];
 }
 
 
@@ -267,6 +271,7 @@
 {
     for (UIButton *button in self.buttonArray) {
         button.selected=NO;
+        [self changeButtonObject:button TransformAngle:0];
     }
     
     CGRect rect = self.frame;
@@ -285,22 +290,20 @@
 }
 
 
+-(void)changeButtonObject:(UIButton *)button TransformAngle:(CGFloat)angle
+{
+    [UIView animateWithDuration:0.5 animations:^{
+        button.imageView.transform =CGAffineTransformMakeRotation(angle);
+    } completion:^(BOOL finished) {
+    }];
+
+}
 
 -(void)showSpringAnimationWithDuration:(CGFloat)duration
                             animations:(void (^)())animations
                             completion:(void (^)())completion
 {
-    
-    //    [UIView animateWithDuration:duration animations:^{
-    //        if (animations) {
-    //            animations();
-    //        }
-    //        
-    //    } completion:^(BOOL finished) {
-    //        if (completion) {
-    //            completion();
-    //        }
-    //    }];
+ 
     
     [UIView animateWithDuration:duration delay:0 usingSpringWithDamping:.8 initialSpringVelocity:5 options:UIViewAnimationOptionCurveEaseOut animations:^{
         
@@ -407,7 +410,7 @@
     self.selectImageView = [[UIImageView alloc]init];
     self.selectImageView.image=image;
     
-    self.selectImageView.frame = CGRectMake(0,0,image.size.width,image.size.height);
+    self.selectImageView.frame = CGRectMake(0,0,25,18);
     
     self.selectImageView.center = CGPointMake(Kscreen_width-40, self.frame.size.height/2);
     
